@@ -2,21 +2,25 @@ import { Phone, Video, Search, Sparkles, MessageSquare, Smile, Paperclip, Mic } 
 import { Button } from "@/components/ui/button"
 import { useState, useEffect, useRef } from "react"
 
-export function ChatWindow({ chat }: { chat: any }) {
+export function ChatWindow({ chat, updateChat }: { chat: any; updateChat?: (id: number, messages: any[]) => void }) {
   const [summary, setSummary] = useState<string | null>(null)
   const [inputValue, setInputValue] = useState<string>("")
+  const [messages, setMessages] = useState<any[]>(chat?.messages || [])
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
 
+  // Reset messages when chat changes
   useEffect(() => {
     setSummary(null)
     setInputValue("")
+    setMessages(chat?.messages || [])
   }, [chat])
 
+  // Scroll to bottom when messages change
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" })
     }
-  }, [chat, chat?.messages])
+  }, [messages])
 
   if (!chat) {
     return (
@@ -24,6 +28,20 @@ export function ChatWindow({ chat }: { chat: any }) {
         Select a chat to start messaging
       </div>
     )
+  }
+
+  // Handle sending message
+  const handleSend = () => {
+    if (!inputValue.trim()) return
+    const newMsg = { from: "Me", text: inputValue, time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) }
+    const updatedMessages = [...messages, newMsg]
+    setMessages(updatedMessages)
+    setInputValue("")
+
+    // If parent wants to update sidebar lastMessage etc.
+    if (updateChat) {
+      updateChat(chat.id, updatedMessages)
+    }
   }
 
   return (
@@ -74,9 +92,9 @@ export function ChatWindow({ chat }: { chat: any }) {
         </Button>
       </div>
 
-      {/* Messages (scrollable) */}
+      {/* Messages */}
       <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4 bg-muted/10">
-        {chat.messages.map((msg: any, idx: number) => (
+        {messages.map((msg, idx) => (
           <div key={idx} className={`flex ${msg.from === "Me" ? "justify-end" : "justify-start"}`}>
             <div
               className={`rounded-2xl px-4 py-2 max-w-[75%] text-sm shadow-sm ${
@@ -114,21 +132,14 @@ export function ChatWindow({ chat }: { chat: any }) {
           placeholder="Type a message..."
           value={inputValue}
           onChange={(e) => setInputValue(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
           className="flex-1 rounded-full border px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
         />
 
         {inputValue.trim() === "" ? (
           <Button variant="ghost" size="icon"><Mic className="h-5 w-5" /></Button>
         ) : (
-          <Button
-            className="px-4 py-2 rounded-full"
-            onClick={() => {
-              if (inputValue.trim()) {
-                alert(`Message sent: ${inputValue}`)
-                setInputValue("")
-              }
-            }}
-          >
+          <Button className="px-4 py-2 rounded-full" onClick={handleSend}>
             Send
           </Button>
         )}
