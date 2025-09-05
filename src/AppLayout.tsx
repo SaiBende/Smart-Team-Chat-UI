@@ -11,13 +11,15 @@ export function AppLayout({
   activeChat,
   setActiveChat,
   dummyChats,
+  teamChats,
   setIsNewChat,
 }: {
   children: React.ReactNode
   activeChat: any
   setActiveChat: any
   dummyChats: any
-  setIsNewChat: (value: boolean) => void
+  teamChats: any
+  setIsNewChat: (value: any) => void
 }) {
   return (
     <SidebarProvider defaultOpen={true}>
@@ -27,7 +29,8 @@ export function AppLayout({
           activeChat={activeChat}
           setActiveChat={setActiveChat}
           dummyChats={dummyChats}
-          setIsNewChat={setIsNewChat} // 👈 forward
+          setIsNewChat={setIsNewChat} 
+          teamChats={teamChats}
         />
          
 

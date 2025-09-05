@@ -6,6 +6,7 @@ import {
   Video,
   Phone,
   Plus,
+  Users,
 } from "lucide-react"
 
 import {
@@ -20,30 +21,18 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { Button } from "@/components/ui/button"
-import { ThemeToggle } from "./ui/ThemeToggle"
 
-
-// Sidebar menu items
 const items = [
-  { title: "Home", url: "#", icon: Home },
-  { title: "Chats", url: "#", icon: MessageCircle },
+  { title: "Home", url: "/", icon: Home },
+  { title: "Chats", url: "#chats", icon: MessageCircle },
+  { title: "Team Chats", url: "#teamchats", icon: Users },
   { title: "Voice Call", url: "#", icon: Phone },
   { title: "Video Call", url: "#", icon: Video },
   { title: "Search", url: "#", icon: Search },
   { title: "Settings", url: "#", icon: Settings },
 ]
 
-export function AppSidebar({
-  activeChat,
-  setActiveChat,
-  dummyChats,
-  setIsNewChat,
-}: {
-  activeChat: any
-  setActiveChat: any
-  dummyChats: any
-  setIsNewChat: (value: boolean) => void
-}) {
+export function AppSidebar({ activeChat, setActiveChat, dummyChats, teamChats, setIsNewChat }) {
   return (
     <Sidebar>
       <SidebarContent>
@@ -72,11 +61,10 @@ export function AppSidebar({
           </SidebarGroupContent>
         </SidebarGroup>
 
-        {/* Chat List */}
+        {/* Personal Chats */}
         <SidebarGroup>
-          <SidebarGroupLabel>Chats</SidebarGroupLabel>
+          <SidebarGroupLabel id="chats">Chats</SidebarGroupLabel>
           <SidebarGroupContent>
-            {/* New Chat button */}
             <div className="p-2">
               <Button
                 className="w-full justify-center"
@@ -94,13 +82,10 @@ export function AppSidebar({
                     <button
                       onClick={() => {
                         setActiveChat(chat)
-                        setIsNewChat(false) // close "new chat" screen if open
+                        setIsNewChat(false)
                       }}
-                      className={`flex items-center gap-3 text-left w-full rounded-lg p-2 ${
-                        activeChat?.id === chat.id
-                          ? "bg-primary/10"
-                          : "hover:bg-muted"
-                      }`}
+                      className={`flex items-center gap-3 text-left w-full rounded-lg p-2 ${activeChat?.id === chat.id ? "bg-primary/10" : "hover:bg-muted"
+                        }`}
                     >
                       <img
                         src={chat.img}
@@ -108,12 +93,8 @@ export function AppSidebar({
                         className="w-9 h-9 rounded-full"
                       />
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium truncate">
-                          {chat.name}
-                        </p>
-                        <p className="text-xs text-muted-foreground truncate">
-                          {chat.lastMessage}
-                        </p>
+                        <p className="text-sm font-medium truncate">{chat.name}</p>
+                        <p className="text-xs text-muted-foreground truncate">{chat.lastMessage}</p>
                       </div>
                       <span className="text-[10px] text-muted-foreground whitespace-nowrap">
                         {chat.time}
@@ -125,7 +106,55 @@ export function AppSidebar({
             </div>
           </SidebarGroupContent>
         </SidebarGroup>
-         
+
+
+        {/* Team Chats */}
+        <SidebarGroup>
+          <SidebarGroupLabel id="teamchats">Team Chats</SidebarGroupLabel>
+          <SidebarGroupContent>
+            {/* New Team button */}
+            <div className="p-2">
+              <Button
+                className="w-full justify-center"
+                variant="outline"
+                onClick={() => setIsNewChat("team")}
+              >
+                <Plus className="h-4 w-4 mr-1" /> New Team Chat
+              </Button>
+            </div>
+
+            <div className="space-y-2">
+              {teamChats.map((team) => (
+                <SidebarMenuItem key={team.id}>
+                  <SidebarMenuButton asChild>
+                    <button
+                      onClick={() => {
+                        setActiveChat(team)
+                        setIsNewChat(false)
+                      }}
+                      className={`flex items-center gap-3 text-left w-full rounded-lg p-2 ${activeChat?.id === team.id ? "bg-primary/10" : "hover:bg-muted"
+                        }`}
+                    >
+                      <img
+                        src={team.img}
+                        alt={team.teamName}
+                        className="w-9 h-9 rounded-full"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium truncate">{team.teamName}</p>
+                        <p className="text-xs text-muted-foreground truncate">{team.lastMessage}</p>
+                      </div>
+                      <span className="text-[10px] text-muted-foreground whitespace-nowrap">
+                        {team.time}
+                      </span>
+                    </button>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </div>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
       </SidebarContent>
     </Sidebar>
   )
