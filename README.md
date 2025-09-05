@@ -1,4 +1,4 @@
-# 📱 Smart Chat UI
+# 📱 Smart Team Chat UI
 
 A modern **React + Vite + Tailwind + shadcn/ui** powered chat application UI.  
 It simulates WhatsApp/Slack-like functionality with personal and team chats, threaded conversations, AI placeholders, and a clean, modern design.  
