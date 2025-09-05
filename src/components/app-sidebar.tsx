@@ -69,7 +69,7 @@ export function AppSidebar({ activeChat, setActiveChat, dummyChats, teamChats, s
               <Button
                 className="w-full justify-center"
                 variant="outline"
-                onClick={() => setIsNewChat(true)}
+                onClick={() => setIsNewChat("chat")}
               >
                 <Plus className="h-4 w-4 mr-1" /> New Chat
               </Button>

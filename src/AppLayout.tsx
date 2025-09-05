@@ -48,7 +48,6 @@ export function AppLayout({
 
           {/* Chat window injected as children */}
           <div className="flex-1 flex flex-col overflow-hidden">
-
             {children}</div>
         </main>
       </div>
